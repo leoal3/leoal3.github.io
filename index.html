@@ -20,6 +20,7 @@
         --line: #dde0d8;
         --accent: #0d6e5f;
         --accent-ink: #ffffff;
+        --ok-bg: #e7f3ef;
         --stubborn: #b34a12;
         --stubborn-bg: #fdf0e6;
         --flame: #d97b06;
@@ -37,6 +38,7 @@
           --line: #2e332f;
           --accent: #3cbfa8;
           --accent-ink: #0c1210;
+          --ok-bg: #17302a;
           --stubborn: #f09a5c;
           --stubborn-bg: #2c2019;
           --flame: #f0a63c;
@@ -46,6 +48,7 @@
         }
       }
       * { box-sizing: border-box; }
+      [hidden] { display: none !important; }
       html { -webkit-text-size-adjust: 100%; }
       body {
         margin: 0;
@@ -99,6 +102,73 @@
       .stat b { display: block; font-family: "Newsreader", Georgia, serif; font-size: 26px; font-weight: 700; line-height: 1.15; }
       .stat span { font-size: 12.5px; color: var(--muted); }
       .stat.stub b { color: var(--stubborn); }
+
+      /* ---------- quiz ---------- */
+      .quiz {
+        margin-top: 14px; background: var(--surface); border: 1px solid var(--line);
+        border-radius: 10px; box-shadow: var(--shadow); padding: 18px 20px 20px;
+      }
+      .quiz-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+      .quiz-title { font-size: 17px; font-weight: 700; }
+      .quiz-score { margin-left: auto; font-size: 13px; color: var(--muted); }
+      .quiz-score b { color: var(--ink); font-size: 15px; }
+      .mode-toggle { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+      .mode-toggle button {
+        font: inherit; font-size: 13.5px; cursor: pointer;
+        border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+        border-radius: 999px; padding: 7px 14px;
+      }
+      .mode-toggle button.on { background: var(--chip-on); color: var(--chip-on-ink); border-color: var(--chip-on); font-weight: 600; }
+      .quiz-idle p { color: var(--muted); font-size: 14px; margin: 14px 0 16px; }
+      .btn {
+        font: inherit; font-size: 15px; font-weight: 600; cursor: pointer;
+        border: 0; border-radius: 8px; padding: 11px 22px;
+        background: var(--accent); color: var(--accent-ink);
+      }
+      .btn:active { opacity: .85; }
+      .btn.ghost { background: var(--surface-2); color: var(--ink); border: 1px solid var(--line); font-weight: 500; }
+      .q-progress { font-size: 12.5px; color: var(--muted); margin: 16px 0 6px; }
+      .q-word-row { display: flex; align-items: center; gap: 10px; }
+      .q-word {
+        font-family: "Newsreader", Georgia, "Times New Roman", serif;
+        font-size: 34px; font-weight: 700; line-height: 1.2; overflow-wrap: break-word;
+      }
+      .q-hint { font-size: 13px; color: var(--muted); margin: 6px 0 14px; }
+      .q-options { display: flex; flex-direction: column; gap: 8px; }
+      .q-opt {
+        font: inherit; font-size: 15.5px; text-align: left; cursor: pointer;
+        background: var(--surface); border: 1px solid var(--line); border-radius: 8px;
+        padding: 12px 14px; color: var(--ink); overflow-wrap: break-word;
+      }
+      .q-opt:disabled { cursor: default; }
+      .q-opt.right { border-color: var(--accent); background: var(--ok-bg); font-weight: 600; }
+      .q-opt.wrong { border-color: var(--stubborn); background: var(--stubborn-bg); }
+      .q-type { display: flex; gap: 8px; }
+      .q-type input {
+        flex: 1; min-width: 0; font: inherit; font-size: 16px; padding: 11px 12px;
+        border: 1px solid var(--line); border-radius: 8px;
+        background: var(--surface); color: var(--ink); outline: 0;
+      }
+      .q-type input:focus { border-color: var(--accent); }
+      .q-feedback { margin-top: 14px; font-size: 14.5px; display: none; line-height: 1.6; }
+      .q-feedback.show { display: block; }
+      .q-feedback .ok { color: var(--accent); font-weight: 700; }
+      .q-feedback .bad { color: var(--stubborn); font-weight: 700; }
+      .q-actions { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; align-items: center; }
+      .link-btn {
+        font: inherit; font-size: 13.5px; background: none; border: 0;
+        color: var(--muted); cursor: pointer; text-decoration: underline; padding: 11px 4px;
+      }
+      .q-done-line { font-size: 15px; margin: 16px 0 4px; line-height: 1.6; }
+      .q-done-line b { font-family: "Newsreader", Georgia, serif; font-size: 20px; }
+      .q-wrong-title { font-size: 13px; font-weight: 700; color: var(--stubborn); margin: 14px 0 6px; }
+      .q-wrong-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+      .q-wrong-list li {
+        background: var(--stubborn-bg); border-radius: 6px; padding: 8px 12px; font-size: 14px;
+        display: flex; gap: 8px; flex-wrap: wrap; align-items: baseline;
+      }
+      .q-wrong-list .w { font-family: "Newsreader", Georgia, serif; font-weight: 600; font-size: 16px; }
+      .q-wrong-list .n { margin-left: auto; color: var(--stubborn); font-weight: 600; font-size: 13px; }
 
       /* ---------- toolbar ---------- */
       .toolbar { position: sticky; top: 0; z-index: 5; background: var(--bg); padding: 14px 0 8px; }
@@ -189,6 +259,56 @@
           <div class="stat"><b id="statTotal">–</b><span>总词量</span></div>
           <button class="stat stub" id="statStubborn" type="button"><b id="statStubN">–</b><span>顽固错词</span></button>
           <div class="stat"><b id="statWeek">–</b><span>本周新增</span></div>
+        </div>
+      </section>
+
+      <section class="quiz" aria-label="自测">
+        <div class="quiz-head">
+          <div class="quiz-title">自测</div>
+          <div class="quiz-score" id="quizScore" hidden>对 <b id="qsOk">0</b> · 错 <b id="qsBad">0</b> · 正确率 <b id="qsRate">–</b></div>
+        </div>
+        <div class="mode-toggle" role="group" aria-label="答题模式">
+          <button type="button" data-qmode="choice" class="on">四选一</button>
+          <button type="button" data-qmode="type">打字输入</button>
+        </div>
+
+        <div class="quiz-idle" id="quizIdle">
+          <p>从全部 <span id="quizTotal"></span> 个词里随机抽题，英 → 中。成绩只在本次打开期间累计，关掉页面就清零。</p>
+          <button class="btn" type="button" id="quizStart">开始自测</button>
+        </div>
+
+        <div id="quizMain" hidden>
+          <p class="q-progress" id="qProgress"></p>
+          <div class="q-word-row">
+            <div class="q-word" id="qWord"></div>
+            <button class="speak" type="button" id="qSpeak" aria-label="朗读单词">
+              <svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16.5 8.6a4.5 4.5 0 0 1 0 6.8l-1-1.2a3.2 3.2 0 0 0 0-4.4l1-1.2z"/><path d="M18.6 6a8 8 0 0 1 0 12l-1-1.2a6.6 6.6 0 0 0 0-9.6l1-1.2z"/></svg>
+            </button>
+          </div>
+          <p class="q-hint" id="qHint"></p>
+          <div class="q-options" id="qOptions"></div>
+          <div class="q-type" id="qType" hidden>
+            <input id="qInput" type="text" placeholder="输入中文释义…" autocomplete="off" />
+            <button class="btn" type="button" id="qSubmit">提交</button>
+          </div>
+          <div class="q-feedback" id="qFeedback"></div>
+          <div class="q-actions">
+            <button class="btn" type="button" id="qNext" hidden>下一题</button>
+            <button class="link-btn" type="button" id="qOverride" hidden>我答对了，改判</button>
+            <button class="link-btn" type="button" id="qEnd">结束自测</button>
+          </div>
+        </div>
+
+        <div id="quizDone" hidden>
+          <p class="q-done-line" id="qDoneLine"></p>
+          <div id="qWrongWrap" hidden>
+            <div class="q-wrong-title">本次答错的词</div>
+            <ul class="q-wrong-list" id="qWrongList"></ul>
+          </div>
+          <div class="q-actions">
+            <button class="btn" type="button" id="qAgain">再来一轮</button>
+            <button class="btn ghost" type="button" id="qClear">清空成绩，重新开始</button>
+          </div>
         </div>
       </section>
 
@@ -399,6 +519,238 @@
           lines.push([cell(w.word), cell(w.meaning), cell(w.added), cell(w.streak)].join(","));
         });
         download("vocabulary-" + SNAPSHOT + ".csv", "\ufeff" + lines.join("\r\n"), "text/csv");
+      });
+
+      /* ---- self-test quiz (session only, nothing is stored) ---- */
+      var quiz = {
+        mode: "choice",
+        active: false,
+        deck: [],
+        pos: 0,
+        current: null,
+        counted: false,
+        lastOk: null,
+        ok: 0,
+        bad: 0,
+        perWord: {}
+      };
+      var qIdle = document.getElementById("quizIdle");
+      var qMain = document.getElementById("quizMain");
+      var qDone = document.getElementById("quizDone");
+      var qScore = document.getElementById("quizScore");
+      var qProgress = document.getElementById("qProgress");
+      var qWordEl = document.getElementById("qWord");
+      var qHint = document.getElementById("qHint");
+      var qOptions = document.getElementById("qOptions");
+      var qType = document.getElementById("qType");
+      var qInput = document.getElementById("qInput");
+      var qFeedback = document.getElementById("qFeedback");
+      var qNextBtn = document.getElementById("qNext");
+      var qOverrideBtn = document.getElementById("qOverride");
+      document.getElementById("quizTotal").textContent = WORDS.length;
+
+      function shuffle(arr) {
+        for (var i = arr.length - 1; i > 0; i--) {
+          var j = Math.floor(Math.random() * (i + 1));
+          var t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+        }
+        return arr;
+      }
+
+      function quizUpdateScore() {
+        var total = quiz.ok + quiz.bad;
+        document.getElementById("qsOk").textContent = quiz.ok;
+        document.getElementById("qsBad").textContent = quiz.bad;
+        document.getElementById("qsRate").textContent = total ? Math.round(quiz.ok / total * 100) + "%" : "–";
+      }
+
+      function quizRecord(ok) {
+        if (quiz.counted) return;
+        quiz.counted = true;
+        quiz.lastOk = ok;
+        if (ok) quiz.ok++; else quiz.bad++;
+        var w = quiz.current.word;
+        if (!quiz.perWord[w]) quiz.perWord[w] = { ok: 0, bad: 0 };
+        if (ok) quiz.perWord[w].ok++; else quiz.perWord[w].bad++;
+        qScore.hidden = false;
+        quizUpdateScore();
+      }
+
+      function quizShowFeedback(ok, extra) {
+        qFeedback.innerHTML = (ok
+          ? '<span class="ok">答对了。</span>'
+          : '<span class="bad">答错了。</span>') +
+          ' <span class="ans">' + esc(quiz.current.word) + ' — ' + esc(quiz.current.meaning) + '</span>' +
+          (extra || "");
+        qFeedback.classList.add("show");
+        qNextBtn.hidden = false;
+        qOverrideBtn.hidden = !(quiz.mode === "type" && !ok);
+      }
+
+      function quizRenderQuestion() {
+        quiz.counted = false;
+        quiz.lastOk = null;
+        qFeedback.classList.remove("show");
+        qFeedback.innerHTML = "";
+        qNextBtn.hidden = true;
+        qOverrideBtn.hidden = true;
+        qProgress.textContent = "第 " + quiz.pos + " 题 · 本轮共 " + quiz.deck.length + " 题";
+        qWordEl.textContent = quiz.current.word;
+        if (quiz.mode === "choice") {
+          qHint.textContent = "选出正确的中文释义";
+          qType.hidden = true;
+          qOptions.hidden = false;
+          var pool = WORDS.filter(function (w) { return w.word !== quiz.current.word; });
+          shuffle(pool);
+          var opts = [quiz.current.meaning];
+          var seen = { };
+          seen[quiz.current.meaning] = true;
+          for (var i = 0; i < pool.length && opts.length < 4; i++) {
+            if (!seen[pool[i].meaning]) { seen[pool[i].meaning] = true; opts.push(pool[i].meaning); }
+          }
+          shuffle(opts);
+          qOptions.innerHTML = "";
+          opts.forEach(function (m) {
+            var b = document.createElement("button");
+            b.type = "button";
+            b.className = "q-opt";
+            b.textContent = m;
+            b.addEventListener("click", function () { quizAnswerChoice(b, m); });
+            qOptions.appendChild(b);
+          });
+        } else {
+          qHint.textContent = "输入这个词的中文释义，写出任意一个义项即可";
+          qOptions.hidden = true;
+          qOptions.innerHTML = "";
+          qType.hidden = false;
+          qInput.value = "";
+          qInput.disabled = false;
+          document.getElementById("qSubmit").disabled = false;
+          qInput.focus();
+        }
+      }
+
+      function quizNext() {
+        if (quiz.pos >= quiz.deck.length) {
+          quiz.deck = shuffle(WORDS.slice());
+          quiz.pos = 0;
+        }
+        quiz.current = quiz.deck[quiz.pos];
+        quiz.pos++;
+        quizRenderQuestion();
+      }
+
+      function quizAnswerChoice(btn, picked) {
+        if (quiz.counted) return;
+        var ok = picked === quiz.current.meaning;
+        quizRecord(ok);
+        var btns = qOptions.querySelectorAll(".q-opt");
+        btns.forEach(function (b) {
+          b.disabled = true;
+          if (b.textContent === quiz.current.meaning) b.classList.add("right");
+        });
+        if (!ok) btn.classList.add("wrong");
+        quizShowFeedback(ok);
+      }
+
+      function normZh(s) {
+        return String(s).replace(/[\s，。；、·…（）()「」""'']+/g, "").toLowerCase();
+      }
+      function gradeTyped(input, meaning) {
+        var a = normZh(input);
+        if (!a) return false;
+        if (a === normZh(meaning)) return true;
+        var senses = meaning.split(/[；;、，,／/]/);
+        for (var i = 0; i < senses.length; i++) {
+          var n = normZh(senses[i]);
+          if (!n) continue;
+          if (n === a) return true;
+          if (n.length >= 2 && (n.indexOf(a) !== -1 || a.indexOf(n) !== -1)) return true;
+        }
+        return false;
+      }
+
+      function quizAnswerTyped() {
+        if (quiz.counted) return;
+        var ok = gradeTyped(qInput.value, quiz.current.meaning);
+        quizRecord(ok);
+        qInput.disabled = true;
+        document.getElementById("qSubmit").disabled = true;
+        quizShowFeedback(ok);
+      }
+
+      function quizStart() {
+        quiz.deck = shuffle(WORDS.slice());
+        quiz.pos = 0;
+        quiz.active = true;
+        qIdle.hidden = true;
+        qDone.hidden = true;
+        qMain.hidden = false;
+        qScore.hidden = false;
+        quizUpdateScore();
+        quizNext();
+      }
+
+      function quizEnd() {
+        quiz.active = false;
+        qMain.hidden = true;
+        qDone.hidden = false;
+        var total = quiz.ok + quiz.bad;
+        document.getElementById("qDoneLine").innerHTML = total
+          ? "本轮共答 <b>" + total + "</b> 题 · 对 <b>" + quiz.ok + "</b> · 错 <b>" + quiz.bad + "</b> · 正确率 <b>" + Math.round(quiz.ok / total * 100) + "%</b>"
+          : "还没答题，先来一轮吧。";
+        var wrongs = Object.keys(quiz.perWord).filter(function (w) { return quiz.perWord[w].bad > 0; });
+        wrongs.sort(function (a, b) { return quiz.perWord[b].bad - quiz.perWord[a].bad; });
+        var wrap = document.getElementById("qWrongWrap");
+        if (wrongs.length) {
+          wrap.hidden = false;
+          document.getElementById("qWrongList").innerHTML = wrongs.map(function (w) {
+            var item = null;
+            WORDS.forEach(function (x) { if (x.word === w) item = x; });
+            return '<li><span class="w">' + esc(w) + '</span><span>' + esc(item ? item.meaning : "") + '</span>' +
+              '<span class="n">错 ' + quiz.perWord[w].bad + ' 次</span></li>';
+          }).join("");
+        } else {
+          wrap.hidden = true;
+        }
+      }
+
+      document.querySelectorAll(".mode-toggle button").forEach(function (b) {
+        b.addEventListener("click", function () {
+          quiz.mode = b.getAttribute("data-qmode");
+          document.querySelectorAll(".mode-toggle button").forEach(function (x) {
+            x.classList.toggle("on", x === b);
+          });
+          if (quiz.active && quiz.current && !quiz.counted) quizRenderQuestion();
+        });
+      });
+      document.getElementById("quizStart").addEventListener("click", quizStart);
+      document.getElementById("qAgain").addEventListener("click", quizStart);
+      document.getElementById("qClear").addEventListener("click", function () {
+        quiz.ok = 0; quiz.bad = 0; quiz.perWord = {};
+        quizUpdateScore();
+        quizStart();
+      });
+      document.getElementById("qEnd").addEventListener("click", quizEnd);
+      qNextBtn.addEventListener("click", quizNext);
+      document.getElementById("qSubmit").addEventListener("click", quizAnswerTyped);
+      document.getElementById("qSpeak").addEventListener("click", function () {
+        if (quiz.current) speak(quiz.current.word);
+      });
+      qOverrideBtn.addEventListener("click", function () {
+        if (!quiz.counted || quiz.lastOk !== false) return;
+        var w = quiz.current.word;
+        quiz.bad--; quiz.ok++;
+        quiz.perWord[w].bad--; quiz.perWord[w].ok++;
+        quiz.lastOk = true;
+        quizUpdateScore();
+        quizShowFeedback(true, "（已改判）");
+        qOverrideBtn.hidden = true;
+      });
+      qInput.addEventListener("keydown", function (e) {
+        if (e.key !== "Enter") return;
+        e.preventDefault();
+        if (!qNextBtn.hidden) quizNext(); else quizAnswerTyped();
       });
 
       render();
